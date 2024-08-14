@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from '@clerk/themes';
 import "./globals.css";
-
+import {Header, Footer } from "@/components/ui"
 
 
 export const metadata: Metadata = {
@@ -24,7 +24,11 @@ export default function RootLayout({
     >
     <html suppressHydrationWarning  lang="en">
       
-      <body className="overflow-y-hidden">{children}</body>
+      <body className="overflow-y-hidden">
+        <Header/>
+        {children}
+        <Footer/>
+        </body>
     </html>
     </ClerkProvider>
 
