@@ -15,13 +15,14 @@
     "@tabler/icons-react": "^3.12.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^11.3.24",
+    "framer-motion": "^11.3.27",
     "mini-svg-data-uri": "^1.4.4",
     "next": "14.2.5",
+    "openai": "^4.62.1",
     "react": "^18",
     "react-dom": "^18",
     "react-element-to-jsx-string": "^15.0.0",
-    "tailwind-merge": "^2.5.1"
+    "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {
     "@types/node": "^20",
