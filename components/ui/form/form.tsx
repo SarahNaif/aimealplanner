@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Label } from "../Label/label";
 import { Input } from "../Input/input";
 import { cn } from "@/lib/utils";
 import { Select, SelectOption } from "@/components/ui";
 import { MealPlanType } from "@/components/types/types";
+import { useMealPlanStore } from '@/store/mealStore';
 
 export default function MealPlanForm() {
 
@@ -16,7 +18,9 @@ export default function MealPlanForm() {
     numberOfMeals: 0,
   });
 
-  const [mealPlan, setMealPlan] = useState<string | null>(null);
+  const setMealPlan = useMealPlanStore((state) => state.setMealPlan);
+  const router = useRouter();
+  
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,25 +44,19 @@ export default function MealPlanForm() {
       });
   
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error:', errorData);
-        if (response.status === 429) {
-          console.log("Too many requests, waiting to retry...");
-          await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds before retrying
-          return handleSubmit(e); // Retry
-        } else {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
       const data = await response.json();
       if (data?.mealPlan) {
         setMealPlan(data.mealPlan);
+        router.push("/meal-details");
+        
       } else {
         throw new Error('Invalid response format');
       }
     } catch (error) {
       console.error('Error generating meal plan:', error);
-      setMealPlan('Error generating meal plan.');
     } finally {
       setLoading(false);
     }
@@ -87,7 +85,7 @@ export default function MealPlanForm() {
             <Label htmlFor="age">Age</Label>
             <Input  placeholder="28" type="number"
              name="age"
-             value={formData.age}
+             value={formData.age === 0 ? '' :formData.age}
              onChange={handleChange}
              required />
           </LabelInputContainer>
@@ -96,14 +94,14 @@ export default function MealPlanForm() {
           <LabelInputContainer>
             <Label htmlFor="weight">Weight (KG)</Label>
             <Input name="weight" placeholder="65 kg" type="number"
-             value={formData.weight}
+             value={formData.weight === 0 ? '': formData.weight}
              onChange={handleChange}
              required />
           </LabelInputContainer>
           <LabelInputContainer>
             <Label htmlFor="height">Height (Centimeters)</Label>
             <Input name="height" placeholder="173 cm" type="number"
-            value={formData.height}
+            value={formData.height === 0 ? '' : formData.height}
             onChange={handleChange}
             required />
           </LabelInputContainer>
@@ -144,7 +142,7 @@ export default function MealPlanForm() {
           <LabelInputContainer>
             <Label htmlFor="numberOfMeals">How many meal per day ?</Label>
             <Input name="numberOfMeals" placeholder="4 meals" type="number"
-            value={formData.numberOfMeals}
+            value={formData.numberOfMeals === 0 ? '' : formData.numberOfMeals}
             onChange={handleChange}
             required />
           </LabelInputContainer>
@@ -170,12 +168,7 @@ export default function MealPlanForm() {
   
       </form>
 
-      {mealPlan && (
-        <div>
-          <h2>Generated Meal Plan</h2>
-          <p>{mealPlan}</p>
-        </div>
-      )}
+     
     </div>
   );
 }
