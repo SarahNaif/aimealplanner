@@ -16,18 +16,31 @@ export interface MealPlanType {
   numberOfMeals: number;
 }
 
+interface Nutrition {
+  calories: number; // Total calories for the dish
+  fat: string;      // Total fat in grams
+  carbohydrates: string; // Total carbohydrates in grams
+  protein: string;  // Total protein in grams
+}
+
 export type Recipe = {
   ingredients: string[];
   instructions: string[];
+  nutrition: Nutrition; 
 };
 
 export type Meal = {
   dishName: string;
+  description: string; 
   recipe: Recipe;
+  
 };
+
+export type Meals  = {
+  [key: string]: Meal;
+};
+
+
 export type MealPlan = {
-  breakfast: Meal;
-  lunch: Meal;
-  dinner: Meal;
-  snacks: Meal;
+  meals: Meals[];
 };
