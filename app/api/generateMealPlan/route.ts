@@ -11,26 +11,50 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const body: MealPlanType = await req.json();
     const { weight, age, height, numberOfMeals } = body;
     const prompt = `
-        I want you to act as a Meal Planner AI. Generate a meal plan for one day based on the provided details only. Each recipe should have a maximum of three instruction steps and include only a few ingredients. Provide the response in JSON format like this: { "mealPlan": { "breakfast": { "dishName": "Dish Name", "recipe": { "ingredients": ["Ingredient 1", "Ingredient 2"], "instructions": ["Step 1", "Step 2"] } }, "lunch": { ... }, "dinner": { ... }, "snacks": { ... } } }. Do not provide any other information.
-  Here are the details:
-  Weight: ${weight} kg
-  Age: ${age} years
-  Height: ${height} cm
-  Meals per day: ${numberOfMeals}.
-    `;
+   I want you to act as a Meal Planner AI. Generate a meal plan for one day based on the provided details only. Each recipe should have a maximum of three instruction steps and include only a few ingredients. Provide the response in JSON format as follows: 
+{
+  "mealPlan": {
+    "meals": [
+      { "breakfast": { 
+        "dishName": "Dish Name", 
+        "description": "A brief description of the dish. 3 lines", 
+        "recipe": { 
+            "ingredients": ["Ingredient 1", "Ingredient 2"], 
+            "instructions": ["Step 1", "Step 2"], 
+            "nutrition": { 
+                "calories": X, 
+                "fat": "Yg", 
+                "carbohydrates": "Zg", 
+                "protein": "Wg" 
+            } 
+        } 
+      } },
+      { "lunch": { ... } },
+      { "dinner": { ... } },
+      { "snack": { ... } },
+    
+    ]
+  }
+} 
+  Make sure to generate exactly ${numberOfMeals} meals in the same format as above. If the total number of meal types exceeds 4, you can label them as "evning snack", "morning snack", etc.
+Do not provide any other information. Here are the details: Weight: ${weight} kg, Age: ${age} years, Height: ${height} cm.
+`;
 
     const response = await client.chat.completions.create({
       model: 'gpt-3.5-turbo', 
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 330, 
+      max_tokens: 1050, 
     });
 
     const mealPlanString = response.choices[0]?.message?.content?.trim() || "{}";
-    console.log("Raw response:", mealPlanString); 
+    
 
     let mealPlan;
     try {
         mealPlan = JSON.parse(mealPlanString);
+        console.log("Raw response:", mealPlan); 
+       
+
     } catch (parseError) {
         console.error('Error parsing meal plan:', parseError);
         console.error('Meal plan string:', mealPlanString); 
