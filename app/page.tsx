@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <SqBackGrounds>
        <IconGrid />
-      <div className="flex flex-col text-center gap-10  -translate-y-16">
+      <div className="flex flex-col text-center gap-10 overflow-y-hidden   -translate-y-16">
 
       <div className=" text-8xl sm:text-8xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
         MEAL PREP AI
