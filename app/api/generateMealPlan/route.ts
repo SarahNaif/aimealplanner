@@ -11,7 +11,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const body: MealPlanType = await req.json();
     const { weight, age, height, numberOfMeals } = body;
     const prompt = `
-   I want you to act as a Meal Planner AI. Generate a meal plan for one day based on the provided details only. Each recipe should have a maximum of three instruction steps and include only a few ingredients. Provide the response in JSON format as follows: 
+   Act as a Meal Planner chef, generating a varied one-day meal plan each time based on the details provided. Ensure each request features different ingredients and recipes. Format the response in JSON as the follow:
 {
   "mealPlan": {
     "meals": [
@@ -43,7 +43,7 @@ Do not provide any other information. Here are the details: Weight: ${weight} kg
     const response = await client.chat.completions.create({
       model: 'gpt-3.5-turbo', 
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 1050, 
+      max_tokens: 1500, 
     });
 
     const mealPlanString = response.choices[0]?.message?.content?.trim() || "{}";
