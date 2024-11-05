@@ -1,14 +1,16 @@
+"use client"
 import SqBackground from '@/components/ui/Background/SqBackGrounds'
-import React from 'react'
+import CardRecipe from '@/components/ui/Card/recipe/CardRecipe';
 
-const page = () => {
+
+const page : React.FC = () =>  {
+
     return (
         <SqBackground>
-            <div>
-                This is a recipe page
-            </div>
-        </SqBackground>
 
+           <CardRecipe/>
+
+        </SqBackground>
     )
 }
 

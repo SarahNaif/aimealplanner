@@ -3,6 +3,7 @@ import { Meal, Meals } from '@/components/types/types';
 import { Button } from '../Button/Button'
 import { FaArrowRight } from "react-icons/fa6";
 import Link from 'next/link';
+import { useMealPlanStore } from '@/store/mealStore';
 
 type CardProps = {
     meal: Meal
@@ -11,7 +12,12 @@ type CardProps = {
 
 const Card: React.FC<CardProps> = ({ meal, mealKey }) => {
     const { dishName, description, recipe } = meal;
-    const { ingredients, instructions, nutrition } = recipe;
+    const { nutrition } = recipe;
+    const setCurrentRecipe = useMealPlanStore((state)=> state.setCurrentRecipe)
+
+    const handleRecipe = () => {
+        setCurrentRecipe(meal)
+    }
 
     return (
         <div className="relative z-44 flex  w-full max-w-[34rem] rounded-xl bg-zinc-900 border border-zinc-100/[0.2] text-gray-700 shadow-md">
@@ -61,7 +67,7 @@ const Card: React.FC<CardProps> = ({ meal, mealKey }) => {
                             </span>
                         </div>
                     </div>
-                    <Link href="/recipe" className="flex items-center gap-1 w-fit tracking-widest text-sm rounded-md bg-gray-600   py-1 px-3 font-semibold text-gray-300" >
+                    <Link href="/recipe" onClick={handleRecipe} className="flex items-center gap-1 w-fit tracking-widest text-sm rounded-md bg-gray-600   py-1 px-3 font-semibold text-gray-300" >
 
                         Recipe
                         <FaArrowRight />
