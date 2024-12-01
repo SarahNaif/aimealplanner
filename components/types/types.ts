@@ -33,6 +33,7 @@ export type Meal = {
   dishName: string;
   description: string; 
   recipe: Recipe;
+  imageUrl?: string;
   
 };
 
@@ -44,3 +45,4 @@ export type Meals  = {
 export type MealPlan = {
   meals: Meals[];
 };
+

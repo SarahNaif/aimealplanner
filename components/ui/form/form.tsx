@@ -19,6 +19,7 @@ export default function MealPlanForm() {
   });
 
   const setMealPlan = useMealPlanStore((state) => state.setMealPlan);
+ 
   const router = useRouter();
   
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,12 +36,21 @@ export default function MealPlanForm() {
     setLoading(true);
   
     try {
+
+      const storedExclusions = localStorage.getItem('exclusions');
+      const exclusions = storedExclusions ? JSON.parse(storedExclusions) : [];
+
+      const requestBody = {
+        ...formData,
+        exclusions, // Adding exclusions to the API request
+      };
+
       const response = await fetch('/api/generateMealPlan', {
         method: 'POST',  // Ensure this is POST
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(requestBody)
       });
   
       if (!response.ok) {
@@ -51,7 +61,13 @@ export default function MealPlanForm() {
       if (data?.mealPlan) {
         setMealPlan(data.mealPlan);
         router.push("/meal-details");
-        
+
+        const newExclusions = data?.mealPlan?.meals?.map((meal: any) => {
+          const mealType = Object.keys(meal)[0]; 
+          return meal[mealType]?.dishName; 
+        }) || [];
+        localStorage.setItem('exclusions', JSON.stringify(newExclusions));
+  
       } else {
         throw new Error('Invalid response format');
       }

@@ -13,8 +13,8 @@ const CardRecipe : React.FC = () => {
     if (!currentRecipe) {
         return <div>No recipe selected.</div>;
     }
-    const { dishName, recipe: { ingredients, instructions } } = currentRecipe;
-console.log(currentRecipe)
+    const { dishName, imageUrl, recipe: { ingredients, instructions } } = currentRecipe;
+
   return (
     <div className="relative z-44 flex w-[55rem] rounded-xl bg-zinc-900 border border-zinc-100/[0.2] text-gray-700 shadow-md">
     <div className="px-6 py-4 w-full">
@@ -22,15 +22,17 @@ console.log(currentRecipe)
 
         
             <div className="flex-shrink-0">
-                <Image
-                    className="rounded-l-lg h-[300px] w-96"
-                    width={300}
-                    height={450}
-                    src="https://shorturl.at/Efo0t"
-                    alt=""
-                />
+            {imageUrl && (
+    <Image
+      className="rounded-l-lg h-[300px] w-96"
+      width={300}
+      height={450}
+      src={imageUrl}
+      alt=""
+    />
+  )}
             </div>
-
+            
           
             <div className=" w-[calc(100%-300px)] overflow-y-auto p-6 flex flex-col justify-between gap-8">
                 
