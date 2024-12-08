@@ -1,83 +1,95 @@
 
 import Image from 'next/image'
-import { Meal, Meals } from '@/components/types/types';
-import { MdOutlineTimer } from "react-icons/md";
-import { TbBowlSpoon } from "react-icons/tb";
-import { LuChefHat } from "react-icons/lu";
-import { FaArrowRightLong } from "react-icons/fa6";
 import Link from 'next/link';
 import { useMealPlanStore } from '@/store/mealStore';
+import { Button } from '../../button';
+import { ArrowLeft, Clock, Users } from 'lucide-react';
+import { Badge } from '../../badge';
+import { Card, CardContent, CardHeader } from '../../card';
 
 const CardRecipe : React.FC = () => {
     const currentRecipe = useMealPlanStore((state) => state.currentRecipe);
     if (!currentRecipe) {
         return <div>No recipe selected.</div>;
     }
-    const { dishName, imageUrl, recipe: { ingredients, instructions } } = currentRecipe;
+    const { dishName, description, imageUrl, recipe: { ingredients, instructions , nutrition} } = currentRecipe;
 
   return (
-    <div className="relative z-44 flex w-[55rem] rounded-xl bg-zinc-900 border border-zinc-100/[0.2] text-gray-700 shadow-md">
-    <div className="px-6 py-4 w-full">
-        <div className="flex flex-row space-x-5  mb-8">
 
-        
-            <div className="flex-shrink-0">
-            {imageUrl && (
-    <Image
-      className="rounded-l-lg h-[300px] w-96"
-      width={300}
-      height={450}
-      src={imageUrl}
-      alt=""
-    />
-  )}
-            </div>
-            
-          
-            <div className=" w-[calc(100%-300px)] overflow-y-auto p-6 flex flex-col justify-between gap-8">
-                
-                <div>
-                <h2 className="font-semibold text-xl mb-4 text-slate-100">{dishName}</h2>
-                    <h3 className="font-semibold text-xl mb-4 text-slate-100">Ingredients</h3>
-                    <ul className="pl-8 text-slate-300 list-outside list-disc ">
-                    {ingredients.map((ingredient, index) => (
-                    <li key={index}>{ingredient}</li>
-                ))} 
-                    </ul>
-                </div>
-
-                
-                <div className="flex gap-6 ml-7  self-start -mb-6  ">
-                    <div className="flex flex-col items-center rounded-md gap-1  px-4 py-2 font-semibold  stroke-yellow-300">
-                        <MdOutlineTimer className="w-5 h-5  text-slate-300" />
-                        <span className="tracking-widest text-sm  text-slate-100">20 min</span>
-                    </div>
-                    <div className="flex flex-col items-center rounded-md gap-1  px-4 py-2 font-semibold  stroke-yellow-300">
-                        <TbBowlSpoon className="w-5 h-5  text-slate-300" />
-                        <span className="tracking-widest text-sm  text-slate-100">20 plate</span>
-                    </div>
-                    <div className="flex flex-col items-center rounded-md gap-1  px-4 py-2 font-semibold  stroke-yellow-300">
-                        <LuChefHat className="w-5 h-5  text-slate-300" />
-                        <span className="tracking-widest text-sm  text-slate-100">easy</span>
-                    </div>
-                </div>
-              
-            </div>
-<Link href="/meal-details">
-<FaArrowRightLong className="w-5 h-5  text-slate-600"/>
-</Link>
-           
-        </div>
-
-        <div className="py-3 px-3 text-slate-300">
-        <ul className=" list-none pl-8 text-slate-300 list-outside ">
-                    {instructions.map((ingredient, index) => (
-                    <li key={index}>{ingredient}</li>
-                ))} 
-                    </ul>
-        </div>
-
+<div className="min-h-screen bg-gray-50 pt-24 ">
+<div className="mx-auto max-w-4xl my-6">
+  <div className="mb-8">
+    <Link href="/meal-details">
+      <Button variant="ghost" className="mb-4">
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Meal Plan
+      </Button>
+    </Link>
+    <h1 className="text-4xl font-bold mb-2">{dishName}</h1>
+    <p className="text-lg text-muted-foreground mb-4">{description}</p>
+    <div className="flex flex-wrap gap-4">
+      <Badge variant="secondary" className="text-sm">
+        <Clock className="mr-1 h-4 w-4" />
+        Prep: 1 min
+      </Badge>
+      <Badge variant="secondary" className="text-sm">
+        <Clock className="mr-1 h-4 w-4" />
+        Cook: 1 min
+      </Badge>
+      <Badge variant="secondary" className="text-sm">
+        <Users className="mr-1 h-4 w-4" />
+        Serves: 1
+      </Badge>
+      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 text-sm">
+        {nutrition.calories} Cal per serving
+      </Badge>
     </div>
+  </div>
+
+  <div className="mb-8">
+  {imageUrl && (
+    <Image
+    src={imageUrl}
+      alt={dishName}
+      width={400}
+      height={400}
+      className="w-full h-[400px] object-cover rounded-lg shadow-md"
+    />
+)}
+  </div>
+ 
+  <div className="grid gap-8 md:grid-cols-2">
+    <Card>
+      <CardHeader>
+        <h2 className="text-2xl font-semibold">Ingredients</h2>
+      </CardHeader>
+      <CardContent>
+        <ul className="list-disc pl-5 space-y-2">
+        {ingredients.map((ingredient, index) => (
+            <li key={index}>
+              {/* <span className="font-medium">{ingredient.amount}</span>*/} {ingredient} 
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+
+    <Card>
+      <CardHeader>
+        <h2 className="text-2xl font-semibold">Instructions</h2>
+      </CardHeader>
+      <CardContent>
+        <ul className=" pl-5 space-y-4">
+        {instructions.map((instruction, index) => (
+            <li key={index} >
+              <p>{instruction}</p>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  </div>
+</div>
 </div>
   )
 }

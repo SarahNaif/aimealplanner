@@ -1,5 +1,7 @@
 "use client"
 import SqBackground from '@/components/ui/Background/SqBackGrounds'
+import { Button } from '@/components/ui/button';
+import CardMeal from '@/components/ui/Card/Card';
 import Card from '@/components/ui/Card/Card'
 import { useMealPlanStore } from '@/store/mealStore';
 import React from 'react'
@@ -9,31 +11,40 @@ const page : React.FC = () => {
     console.log(mealPlan)
 
     return (
-        <SqBackground>
-
-
-            <div className="flex flex-col justify-center gap-9 px-4 sm:px-6 lg:px-9 max-w-full lg:max-w-[87rem] mx-auto">
-                <div className=' flex justify-end pr-28 p-4 shadow-lg  '>
-                    <div className='text-black bg-white p-2 rounded-lg'>
-                        Download</div>
-
-                </div>
-                <div className='flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-6 justify-center overflow-y-auto max-h-[41rem] p-4 '>
-                    {mealPlan ? 
-                    
-                    mealPlan?.meals.map((meal, index)  => {
+      
+<main className="min-h-screen bg-gray-50 pt-24 p-8">
+        <div className="space-y-8 my-9">
+          <div className="flex justify-between">
+            <div className="space-y-2 mt-3">
+            <h1 className="text-slate-800 text-4xl font-bold">Your Daily Meal Plan</h1>
+            <p className="">
+              A balanced selection of nutritious meals totaling 1,080 calories.
+            </p>
+            </div>
+         
+            <div className='self-end'>
+                <Button variant={'outline'}>
+                    Download
+                </Button>
+            </div>
+          </div>
+          
+          <div className="grid gap-6 md:grid-cols-2">
+          {mealPlan ? 
+          mealPlan?.meals.map((meal, index)  => {
                         const mealKey = Object.keys(meal)[0];
                         console.log(JSON.stringify(meal[mealKey]))
-                        return  <Card key={index} meal={meal[mealKey]} mealKey={mealKey} />
+                        return  <CardMeal key={index} meal={meal[mealKey]} mealKey={mealKey} />
                      })
                 : 
                 <div> No meals Found</div>
                 
                 }
 
-                </div>
-            </div>
-        </SqBackground>
+          </div>
+        </div>
+      </main>
+      
     )
 }
 

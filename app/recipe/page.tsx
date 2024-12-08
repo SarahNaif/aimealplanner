@@ -6,11 +6,13 @@ import CardRecipe from '@/components/ui/Card/recipe/CardRecipe';
 const page : React.FC = () =>  {
 
     return (
-        <SqBackground>
+   <div className=''>
+<CardRecipe/>
 
-           <CardRecipe/>
+</div>
+       
 
-        </SqBackground>
+   
     )
 }
 

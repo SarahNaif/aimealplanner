@@ -1,16 +1,19 @@
 import React, { ReactNode } from 'react'
 import { Meal, Meals } from '@/components/types/types';
-import { Button } from '../Button/Button'
 import { FaArrowRight } from "react-icons/fa6";
 import Link from 'next/link';
 import { useMealPlanStore } from '@/store/mealStore';
+import { Card, CardContent, CardFooter, CardHeader } from '../card';
+import { Badge } from '../badge';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '../button';
 
 type CardProps = {
     meal: Meal
     mealKey: string;
 };
 
-const Card: React.FC<CardProps> = ({ meal, mealKey }) => {
+const CardMeal: React.FC<CardProps> = ({ meal, mealKey }) => {
     const { dishName, description, recipe } = meal;
     const { nutrition } = recipe;
     const setCurrentRecipe = useMealPlanStore((state)=> state.setCurrentRecipe)
@@ -20,65 +23,47 @@ const Card: React.FC<CardProps> = ({ meal, mealKey }) => {
     }
 
     return (
-        <div className="relative z-44 flex  w-full max-w-[34rem] rounded-xl bg-zinc-900 border border-zinc-100/[0.2] text-gray-700 shadow-md">
-
-            <div className="px-6 py-4">
-                <div className='flex gap-3 justify-between'>
-                    <div className="w-fit tracking-widest text-sm rounded-md bg-gray-600  mb-6 py-1 px-3 font-semibold text-gray-300 ">
-                        <span className="capitalize">
-                     #{mealKey}
-                        </span>
-                    </div>
-                    <div className="w-fit tracking-widest text-sm rounded-md bg-amber-200  mb-6 py-1 px-3 font-semibold text-amber-900 ">
-                        <span>
-                        {nutrition.calories} Cal
-                        </span>
-                    </div>
-
-                </div>
-
-
-                <h4 className="mb-2 block font-sans text-2xl font-semibold leading-snug tracking-normal text-gray-200 antialiased">
-                   {dishName}
-                   
-                </h4>
-                <p className="mb-5 block font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
-                    {description}
-                </p>
-
-
-                <div className="flex gap-2 justify-between mb-2">
-
-
-                    <div className="flex gap-4">
-                        <div className="rounded-md bg-red-300 px-2 font-semibold text-red-900 ">
-                            <span className='tracking-widest text-xs'>
-                                {nutrition.fat} Fat
-                            </span>
-                        </div>
-                        <div className="rounded-md bg-blue-300 px-2 font-semibold text-blue-900 ">
-                            <span className='tracking-widest text-xs'>
-                                {nutrition.protein} Protien
-                            </span>
-                        </div>
-                        <div className="rounded-md bg-green-300  px-2 font-semibold text-green-900 ">
-                            <span className='tracking-widest text-xs'>
-                                {nutrition.carbohydrates} Carb
-                            </span>
-                        </div>
-                    </div>
-                    <Link href="/recipe" onClick={handleRecipe} className="flex items-center gap-1 w-fit tracking-widest text-sm rounded-md bg-gray-600   py-1 px-3 font-semibold text-gray-300" >
-
-                        Recipe
-                        <FaArrowRight />
-                    </Link>
-                </div>
-            </div>
-
-        </div>
-
+        <Card className="flex flex-col ">
+        <CardHeader className="flex-col justify-between items-start gap-4 space-y-0">
+          <div className="flex flex-row justify-between w-full">
+            <Badge variant="secondary" className="rounded-sm capitalize">
+              #{mealKey}
+            </Badge>
+            <Badge variant="secondary" className="rounded-sm bg-yellow-100 text-yellow-900">
+          {nutrition.calories}Cal
+          </Badge>
+        
+          </div>
+          
+          <h3 className="font-semibold text-xl leading-none tracking-tight">
+            {dishName}
+            </h3>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">{description}</p>
+        </CardContent>
+        <CardFooter className="flex justify-between mt-auto ">
+          <div className="flex gap-2 ">
+            <Badge variant="secondary" className="rounded-sm bg-red-100 text-red-900">
+            {nutrition.fat} Fat
+            </Badge>
+            <Badge variant="secondary" className="rounded-sm bg-blue-100 text-blue-900">
+              {nutrition.protein} Protein
+            </Badge>
+            <Badge variant="secondary" className="rounded-sm bg-green-100 text-green-900">
+              {nutrition.carbohydrates} Carb
+            </Badge>
+          </div>
+          <Button variant="outline" size="sm" className="ml-auto " asChild>
+            <Link href="/recipe" onClick={handleRecipe}>
+              Recipe
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </CardFooter>
+      </Card>
 
     )
 }
 
-export default Card
+export default CardMeal
