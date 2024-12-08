@@ -1,40 +1,55 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Label } from "../Label/label";
-import { Input } from "../Input/input";
 import { cn } from "@/lib/utils";
-import { Select, SelectOption } from "@/components/ui";
+
 import { MealPlanType } from "@/components/types/types";
 import { useMealPlanStore } from '@/store/mealStore';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../card";
+import { Label } from "../label";
+import { Input } from "../input";
+import { Selector } from "./Selector";
+import { Loader2 } from "lucide-react";
+import { Button } from "../button";
+import { Span } from "next/dist/trace";
 
 export default function MealPlanForm() {
 
-  // Initialize state for form values
+  
   const [formData, setFormData] = useState<MealPlanType>({
     weight: 0,
     age: 0,
     height: 0,
-    numberOfMeals: 0,
+    meals: "",
+    gender:"",
+    goal:"",
   });
 
   const setMealPlan = useMealPlanStore((state) => state.setMealPlan);
- 
+
   const router = useRouter();
-  
+
   const [loading, setLoading] = useState<boolean>(false);
+
+
+  const handleSelect = (name: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: Number(e.target.value) // Cast input value to number
+      [e.target.name]: Number(e.target.value)
     });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-  
+
     try {
 
       const storedExclusions = localStorage.getItem('exclusions');
@@ -52,7 +67,7 @@ export default function MealPlanForm() {
         },
         body: JSON.stringify(requestBody)
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -61,13 +76,13 @@ export default function MealPlanForm() {
       if (data?.mealPlan) {
         setMealPlan(data.mealPlan);
         router.push("/meal-details");
-
+console.log(data.mealPlan)
         const newExclusions = data?.mealPlan?.meals?.map((meal: any) => {
-          const mealType = Object.keys(meal)[0]; 
-          return meal[mealType]?.dishName; 
+          const mealType = Object.keys(meal)[0];
+          return meal[mealType]?.dishName;
         }) || [];
         localStorage.setItem('exclusions', JSON.stringify(newExclusions));
-  
+
       } else {
         throw new Error('Invalid response format');
       }
@@ -77,137 +92,99 @@ export default function MealPlanForm() {
       setLoading(false);
     }
   };
-  
 
-
-  const [selectedGender, setSelectedGender] = useState("");
-  
   return (
-    <div className="max-w-xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-      <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-        Welcome to AI Chef Meal
-      </h2>
-      <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-       
-      </p>
+    <Card className=" max-w-xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+      <CardHeader>
+        <CardTitle className="font-bold text-3xl capitalize text-neutral-800 dark:text-neutral-200">
+          Welcome to AI Chef Meal
+        </CardTitle>
+        <CardDescription className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
+          Enter your details to generate a customized meal plan tailored to your health and lifestyle goals.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="flex gap-4 mb-2 w-full">
+            <div className="w-full space-y-1">
+              <Label>Age</Label>
+              <Input placeholder="28" type="number"
+                name="age"
+                value={formData.age === 0 ? '' : formData.age}
+                onChange={handleChange}
+                required />
+            </div>
+            <div className="w-full space-y-1">
+              <Label>Gender</Label>
+              <Selector
+                label="gender"
+                options={[
+                  { label: "Male", value: "male" },
+                  { label: "Female", value: "female" },
+                ]}
+                onSelect={handleSelect}
+              />
+            </div>
+          </div>
+          <div className="flex gap-4 mb-2 w-full">
+            <div className="w-full space-y-1">
+              <Label htmlFor="weight">Weight (KG)</Label>
+              <Input name="weight" placeholder="65 kg" type="number"
+                value={formData.weight === 0 ? '' : formData.weight}
+                onChange={handleChange}
+                required />
+            </div>
+            <div className="w-full space-y-1">
+              <Label htmlFor="height">Height (Centimeters)</Label>
+              <Input name="height" placeholder="173 cm" type="number"
+                value={formData.height === 0 ? '' : formData.height}
+                onChange={handleChange}
+                required />
+            </div>
+          </div>
+          <div className="flex gap-4 mb-2 w-full">
+            <div className="w-full space-y-1">
+              <Label>
+                Meals per day
+              </Label>
+              <Selector
+                label="meals"
+                options={[
+                  { label: "3 Meals", value: "3" },
+                  { label: "4 Meals", value: "4" },
+                  { label: "6 Meals", value: "6" },
+                ]}
+                onSelect={handleSelect}
+              />
+            </div>
+            <div className="w-full space-y-1">
+              <Label className="">Goal</Label>
+              <Selector
+                label="goal"
+                options={[
+                  { label: "Gain Muscle", value: "gain_muscle" },
+                  { label: "Lose Weight", value: "lose_weight" },
+                  { label: "Maintain Weight", value: "maintain_weight" },
+                ]}
+                onSelect={handleSelect}
+              />
+            </div>
 
-      <form className="my-8" onSubmit={handleSubmit}>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          {/* <LabelInputContainer>
-            <Label htmlFor="firstname">First name</Label>
-            <Input id="firstname" placeholder="Tyler" type="text" />
-          </LabelInputContainer> */}
-          <LabelInputContainer>
-            <Label htmlFor="age">Age</Label>
-            <Input  placeholder="28" type="number"
-             name="age"
-             value={formData.age === 0 ? '' :formData.age}
-             onChange={handleChange}
-             required />
-          </LabelInputContainer>
-        </div>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="weight">Weight (KG)</Label>
-            <Input name="weight" placeholder="65 kg" type="number"
-             value={formData.weight === 0 ? '': formData.weight}
-             onChange={handleChange}
-             required />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="height">Height (Centimeters)</Label>
-            <Input name="height" placeholder="173 cm" type="number"
-            value={formData.height === 0 ? '' : formData.height}
-            onChange={handleChange}
-            required />
-          </LabelInputContainer>
-        </div>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          {/* <LabelInputContainer>
-            <Label htmlFor="gender">Gender</Label>
-            <Select
-              value={selectedGender}
-              onChange={(e) => setSelectedGender(e.target.value)}
-              id="gender"
-              placeholder="">
-              <SelectOption value="male">Male</SelectOption>
-              <SelectOption value="female">Female</SelectOption>
-            </Select>
-
-          </LabelInputContainer> */}
-          {/* <LabelInputContainer>
-            <Label htmlFor="tgWeight">Target Weight</Label>
-            <Input name="tgWeight" placeholder="55 kg" type="number" />
-          </LabelInputContainer> */}
-        </div>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          {/* <LabelInputContainer>
-            <Label htmlFor="gender">What is your goal ?</Label>
-            <Select
-              value={selectedGender}
-              onChange={(e) => setSelectedGender(e.target.value)}
-              id="gender"
-              placeholder="">
-              <SelectOption value="lose weight">Loose Weight</SelectOption>
-              <SelectOption value="gain weight">Gain Weight</SelectOption>
-              <SelectOption value="build muscle">Build Muscle</SelectOption>
-              <SelectOption value="maintain weight">Maintain Weight</SelectOption>
-            </Select>
-
-          </LabelInputContainer> */}
-          <LabelInputContainer>
-            <Label htmlFor="numberOfMeals">How many meal per day ?</Label>
-            <Input name="numberOfMeals" placeholder="4 meals" type="number"
-            value={formData.numberOfMeals === 0 ? '' : formData.numberOfMeals}
-            onChange={handleChange}
-            required />
-          </LabelInputContainer>
-        </div>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          
-          {/* <LabelInputContainer>
-            <Label htmlFor="meals">Any allergies or ingredients you don't want to see in your meals? </Label>
-            <Input id="meals" placeholder="Mulukhiyah for me" type="text" />
-          </LabelInputContainer> */}
-        </div>
-        <button
-          className="bg-gradient-to-br my-5 relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? 'Generating...' : 'Generate Meal Plan'}   &rarr;
-          <BottomGradient />
-        </button>
-
-        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-
-  
-      </form>
-
-     
-    </div>
+          </div>
+          <Button
+            className="flex justify-center items-center disabled: bg-gradient-to-br my-5 relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600  dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ?  <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </> : 'Generate Meal Plan'}   &rarr;
+          </Button>
+          <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+          {loading && <span>Please be patient this may take 1 to 2 minutes</span>}
+        </form>
+      </CardContent>
+    </Card>
   );
 }
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-    </>
-  );
-};
-
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>
-  );
-};

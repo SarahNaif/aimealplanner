@@ -13,7 +13,9 @@ export interface MealPlanType {
   weight: number;
   age: number;
   height: number;
-  numberOfMeals: number;
+  meals: string;
+  gender:string;
+  goal:string;
 }
 
 interface Nutrition {

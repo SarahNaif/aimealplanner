@@ -12,21 +12,18 @@ interface APIResponse {
 }
  
 const client = new OpenAI({
-  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+  apiKey: process.env['OPENAI_API_KEY'], 
 });
 
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const body: MealPlanType & { exclusions?: string[] } = await req.json();
-    const { weight, age, height, numberOfMeals, exclusions = [] } = body;
+    const { gender, goal, weight, age, height, meals, exclusions = [] } = body;
   
     const exclusionsString = exclusions.length
       ? exclusions.map((item) => `"${item}"`).join(", ")
       : "none";
-
-    
-    
 
     const systemPrompt = `
 You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Each response should:
@@ -37,7 +34,7 @@ You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Eac
     "meals": [
       { "breakfast": { 
         "dishName": "Dish Name", 
-        "description": "A brief description of the dish (3 lines)", 
+        "description": "A brief description of the dish (5 lines)", 
         "recipe": { 
           "ingredients": ["Ingredient 1", "Ingredient 2"], 
           "instructions": ["Step 1", "Step 2"], 
@@ -55,15 +52,17 @@ You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Eac
     ]
   }
 }
-3. Label additional meals as "morning snack," "evening snack," etc., if needed, to match the requested number of meals (${numberOfMeals}).
+3. Label additional meals as "morning snack," "evening snack," etc., if needed, to match the requested number of meals (${meals}).
 4. Avoid outputting any additional text or explanation.
 `;
     const userPrompt = `
     Generate a one-day meal plan using the following details:
-    - Weight: ${weight} kg
-    - Age: ${age} years
-    - Height: ${height} cm
-    Ensure the plan is varied each time and includes a specific number of meals: ${numberOfMeals}.
+    - Age: ${age} years.
+    - Gender: ${gender}.
+    - Weight: ${weight} kg.
+    - Height: ${height} cm.
+    - Goal: ${goal}.
+    Ensure the plan is varied each time and includes a specific number of meals: ${meals}.
     `;
     
 
