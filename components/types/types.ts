@@ -35,7 +35,7 @@ export type Meal = {
   dishName: string;
   description: string; 
   recipe: Recipe;
-  imageUrl?: string;
+  imageUrl: string;
   
 };
 

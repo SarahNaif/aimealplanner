@@ -1,8 +1,15 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
-    images: {
-        domains: ['shorturl.at', 'oaidalleapiprodscus.blob.core.windows.net'],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
       },
+    ],
+  },
 };
 
 export default nextConfig;

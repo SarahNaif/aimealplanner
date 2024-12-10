@@ -1,18 +1,16 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { MealPlan, MealPlanType, Meal } from '@/components/types/types';
 import OpenAI from 'openai';
-import { useMealPlanStore } from '@/store/mealStore';
+import { v2 as cloudinary } from 'cloudinary';
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-
-
-interface APIResponse {
-  mealPlan: MealPlan;
-  imageUrl: string;
-}
- 
 const client = new OpenAI({
-  apiKey: process.env['OPENAI_API_KEY'], 
+  apiKey: process.env['OPENAI_API_KEY'],
 });
 
 
@@ -20,7 +18,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const body: MealPlanType & { exclusions?: string[] } = await req.json();
     const { gender, goal, weight, age, height, meals, exclusions = [] } = body;
-  
+
     const exclusionsString = exclusions.length
       ? exclusions.map((item) => `"${item}"`).join(", ")
       : "none";
@@ -34,7 +32,7 @@ You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Eac
     "meals": [
       { "breakfast": { 
         "dishName": "Dish Name", 
-        "description": "A brief description of the dish (5 lines)", 
+        "description": "A brief description of the dish (6 lines)", 
         "recipe": { 
           "ingredients": ["Ingredient 1", "Ingredient 2"], 
           "instructions": ["Step 1", "Step 2"], 
@@ -64,35 +62,27 @@ You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Eac
     - Goal: ${goal}.
     Ensure the plan is varied each time and includes a specific number of meals: ${meals}.
     `;
-    
+
 
 
 
     const response = await client.chat.completions.create({
-      model: 'gpt-3.5-turbo', 
-      messages: [ { role: "system", content: systemPrompt },{ role: 'user', content: userPrompt }],
-      max_tokens: 1500, 
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: "system", content: systemPrompt }, { role: 'user', content: userPrompt }],
+      max_tokens: 1500,
       temperature: 0.7
     });
 
     const mealPlanString = response.choices[0]?.message?.content?.trim() || "{}";
-    
+
 
     let mealPlan
     try {
-        mealPlan = JSON.parse(mealPlanString);
-       
-       
-
+      mealPlan = JSON.parse(mealPlanString);
     } catch (parseError) {
-        console.error('Error parsing meal plan:', parseError);
-        console.error('Meal plan string:', mealPlanString); 
-        throw new Error("Invalid meal plan format");
-    }
-
-   
-    if (!mealPlan.mealPlan) {
-      throw new Error("Invalid meal plan format");
+      console.error('Error parsing meal plan:', parseError);
+      console.error('Meal plan string:', mealPlanString);
+      throw new Error("Invalid meal plan format", mealPlan);
     }
 
 
@@ -100,21 +90,32 @@ You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Eac
       const mealType = Object.keys(meal)[0]; // e.g., "breakfast", "lunch"
       const dish = meal[mealType];
       const imagePrompt = `A high-quality image of a meal with the following description: ${dish.description}. Include ingredients like ${dish.recipe.ingredients.join(", ")}.`;
+      try {
+        const imageResponse = await client.images.generate({
+          prompt: imagePrompt,
+          n: 1,
+          size: '1024x1024',
+        });
 
-      const imageResponse = await client.images.generate({
-        prompt: imagePrompt,
-        n: 1,
-        size: '1024x1024',
-      });
+        const imageUrl = imageResponse.data[0].url;
 
-      const imageUrl = imageResponse.data[0].url;
-      dish.imageUrl = imageUrl;
+        if (!imageUrl) throw new Error('Image URL is undefined');
+
+        const uploadResponse = await cloudinary.uploader.upload(imageUrl, {
+          folder: 'meal-planner',
+        });
+
+        const cloudinaryUrl = uploadResponse.secure_url;
+
+        dish.imageUrl = cloudinaryUrl;
+        console.log(dish.imageUrl)
+
+      } catch (error) {
+        console.warn(`Image generation or upload failed for ${mealType}:`, error);
+        dish.imageUrl ='https://res.cloudinary.com/dvukj9sqf/image/upload/v1733738996/affd16fd5264cab9197da4cd1a996f820e601ee4_mieb05.png';
+        dish.blurDataURL = null;
+      }
     }
-
-
-
-
-
     return NextResponse.json(mealPlan);
 
   } catch (error) {

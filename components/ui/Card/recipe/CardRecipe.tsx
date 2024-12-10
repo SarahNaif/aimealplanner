@@ -6,18 +6,25 @@ import { Button } from '../../button';
 import { ArrowLeft, Clock, Users } from 'lucide-react';
 import { Badge } from '../../badge';
 import { Card, CardContent, CardHeader } from '../../card';
+import { Suspense, useState } from 'react';
+import { Skeleton } from '../../skeleton';
+import Loading from '@/app/recipe/loading';
+
 
 const CardRecipe : React.FC = () => {
     const currentRecipe = useMealPlanStore((state) => state.currentRecipe);
+    const [imageLoaded, setImageLoaded] = useState(false);
     if (!currentRecipe) {
         return <div>No recipe selected.</div>;
     }
     const { dishName, description, imageUrl, recipe: { ingredients, instructions , nutrition} } = currentRecipe;
-
+ 
+     
   return (
 
 <div className="min-h-screen bg-gray-50 pt-24 ">
 <div className="mx-auto max-w-4xl my-6">
+
   <div className="mb-8">
     <Link href="/meal-details">
       <Button variant="ghost" className="mb-4">
@@ -46,17 +53,24 @@ const CardRecipe : React.FC = () => {
     </div>
   </div>
 
-  <div className="mb-8">
-  {imageUrl && (
-    <Image
-    src={imageUrl}
-      alt={dishName}
-      width={400}
-      height={400}
-      className="w-full h-[400px] object-cover rounded-lg shadow-md"
-    />
-)}
-  </div>
+  <div className="relative w-full h-[400px] mb-8">
+
+  {!imageLoaded && (
+            <Skeleton className="absolute inset-0 w-full h-full rounded-lg shadow-md" />
+          )}
+          <Image
+            src={imageUrl}
+            alt={dishName}
+            width={400}
+            height={400}
+            className={`absolute inset-0 w-full h-full object-cover rounded-lg shadow-md transition-opacity duration-300 ${
+      imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            onLoadingComplete={() => setImageLoaded(true)}
+          />
+
+
+      </div>
  
   <div className="grid gap-8 md:grid-cols-2">
     <Card>
@@ -89,6 +103,8 @@ const CardRecipe : React.FC = () => {
       </CardContent>
     </Card>
   </div>
+
+
 </div>
 </div>
   )
