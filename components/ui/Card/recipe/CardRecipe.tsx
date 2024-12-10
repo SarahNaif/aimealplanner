@@ -66,7 +66,7 @@ const CardRecipe : React.FC = () => {
             className={`absolute inset-0 w-full h-full object-cover rounded-lg shadow-md transition-opacity duration-300 ${
       imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
-            onLoadingComplete={() => setImageLoaded(true)}
+            onLoad={() => setImageLoaded(true)}
           />
 
 
