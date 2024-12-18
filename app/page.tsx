@@ -17,7 +17,7 @@ export default function Home() {
                   AI-Powered Meal Planning Made Easy
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Personalized meal plans, grocery lists, and recipes tailored to your preferences and dietary needs.
+                  Personalized meal plans and recipes tailored to your preferences and dietary needs.
                 </p>
               </div>
               <div className="space-x-4">

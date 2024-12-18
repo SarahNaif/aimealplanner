@@ -94,7 +94,7 @@ console.log(data.mealPlan)
   };
 
   return (
-    <Card className=" max-w-xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+    <Card className="absolute max-w-xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white ">
       <CardHeader>
         <CardTitle className="font-bold text-3xl capitalize text-neutral-800 dark:text-neutral-200">
           Welcome to AI Chef Meal

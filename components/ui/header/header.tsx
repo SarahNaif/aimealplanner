@@ -25,17 +25,14 @@ const pathname = usePathname()
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="hidden md:flex">
-            <Download className="h-5 w-5" />
-            <span className="sr-only">Download meal plan</span>
-          </Button>
+     
           <nav className="hidden md:flex flex-1 items-center gap-7 px-6">
-            <Link href="/meal-planner" className="text-sm font-medium">
-              Credit:  2
+            <Link href="/meal-planner" className="text-sm font-semibold  py-1 px-2 rounded-md text-black">
+              Credit:  <span className="mx-2">2</span>
             </Link>
           </nav>
           <SignedOut>
-            <Button variant="outline" size="sm">
+            <Button variant="destructive" size="sm" className="px-4">
               <SignInButton />
             </Button>
           </SignedOut>
