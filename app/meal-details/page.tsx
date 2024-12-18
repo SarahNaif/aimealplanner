@@ -10,6 +10,12 @@ const page : React.FC = () => {
     const mealPlan = useMealPlanStore((state) => state.mealPlan);
     console.log(mealPlan)
 
+    const totalCalories = mealPlan?.meals?.reduce((total, meal) => {
+      const mealKey = Object.keys(meal)[0];
+      const cal = meal[mealKey].recipe.nutrition.calories || 0
+      return total + cal
+  }, 0);
+
     return (
      
 <main className="min-h-screen bg-gray-50 pt-24 p-8">
@@ -18,14 +24,8 @@ const page : React.FC = () => {
             <div className="space-y-2 mt-3">
             <h1 className="text-slate-800 text-4xl font-bold">Your Daily Meal Plan</h1>
             <p className="">
-              A balanced selection of nutritious meals totaling 1,080 calories.
+              A balanced selection of nutritious meals totaling {totalCalories} calories.
             </p>
-            </div>
-         
-            <div className='self-end'>
-                <Button variant={'outline'}>
-                    Download
-                </Button>
             </div>
           </div>
           
