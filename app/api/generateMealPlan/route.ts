@@ -41,7 +41,9 @@ You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Eac
             "fat": "Yg", 
             "carbohydrates": "Zg", 
             "protein": "Wg" 
-          } 
+          },
+          "prepTime": X,
+          "cookTime": X  
         } 
       } },
       { "lunch": { ... } },
@@ -89,12 +91,12 @@ You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Eac
     for (const meal of mealPlan.mealPlan.meals) {
       const mealType = Object.keys(meal)[0]; // e.g., "breakfast", "lunch"
       const dish = meal[mealType];
-      const imagePrompt = `A high-quality image of a meal with the following description: ${dish.description}. Include ingredients like ${dish.recipe.ingredients.join(", ")}.`;
+      const imagePrompt = `A high-quality image of a meal with the following description: ${dish.description}. Include ingredients like ${dish.recipe.ingredients.join(", ")}. `;
       try {
         const imageResponse = await client.images.generate({
           prompt: imagePrompt,
           n: 1,
-          size: '1024x1024',
+          size: '512x512',
         });
 
         const imageUrl = imageResponse.data[0].url;
@@ -108,12 +110,11 @@ You are a Meal Planner chef tasked with creating a JSON-formatted meal plan. Eac
         const cloudinaryUrl = uploadResponse.secure_url;
 
         dish.imageUrl = cloudinaryUrl;
-        console.log(dish.imageUrl)
 
       } catch (error) {
         console.warn(`Image generation or upload failed for ${mealType}:`, error);
-        dish.imageUrl ='https://res.cloudinary.com/dvukj9sqf/image/upload/v1733738996/affd16fd5264cab9197da4cd1a996f820e601ee4_mieb05.png';
-        dish.blurDataURL = null;
+        // dish.imageUrl ='https://res.cloudinary.com/dvukj9sqf/image/upload/v1733738996/affd16fd5264cab9197da4cd1a996f820e601ee4_mieb05.png';
+        // dish.blurDataURL = null;
       }
     }
     return NextResponse.json(mealPlan);

@@ -29,6 +29,8 @@ export type Recipe = {
   ingredients: string[];
   instructions: string[];
   nutrition: Nutrition; 
+  prepTime: number; 
+  cookTime: number; 
 };
 
 export type Meal = {

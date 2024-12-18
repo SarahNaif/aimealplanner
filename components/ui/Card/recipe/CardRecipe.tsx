@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link';
 import { useMealPlanStore } from '@/store/mealStore';
 import { Button } from '../../button';
-import { ArrowLeft, Clock, Users } from 'lucide-react';
+import { ArrowLeft, Clock, CookingPot, Users } from 'lucide-react';
 import { Badge } from '../../badge';
 import { Card, CardContent, CardHeader } from '../../card';
 import { Suspense, useState } from 'react';
@@ -17,7 +17,7 @@ const CardRecipe : React.FC = () => {
     if (!currentRecipe) {
         return <div>No recipe selected.</div>;
     }
-    const { dishName, description, imageUrl, recipe: { ingredients, instructions , nutrition} } = currentRecipe;
+    const { dishName, description, imageUrl, recipe: { ingredients, instructions , nutrition, prepTime, cookTime} } = currentRecipe;
  
      
   return (
@@ -37,15 +37,11 @@ const CardRecipe : React.FC = () => {
     <div className="flex flex-wrap gap-4">
       <Badge variant="secondary" className="text-sm">
         <Clock className="mr-1 h-4 w-4" />
-        Prep: 1 min
+        Prep: {prepTime} min
       </Badge>
       <Badge variant="secondary" className="text-sm">
-        <Clock className="mr-1 h-4 w-4" />
-        Cook: 1 min
-      </Badge>
-      <Badge variant="secondary" className="text-sm">
-        <Users className="mr-1 h-4 w-4" />
-        Serves: 1
+        <CookingPot className="mr-1 h-4 w-4" />
+        Cook: {cookTime} min
       </Badge>
       <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 text-sm">
         {nutrition.calories} Cal per serving
