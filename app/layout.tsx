@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from '@clerk/themes';
 import "./globals.css";
-import {Header, Footer } from "@/components/ui"
+import {Header, Footer } from "@/components/shared"
 
 
 export const metadata: Metadata = {
