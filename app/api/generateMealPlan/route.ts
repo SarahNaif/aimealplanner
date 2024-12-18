@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { MealPlan, MealPlanType, Meal } from '@/components/types/types';
+import { MealPlan, MealPlanType, Meal } from '@/types/types';
 import OpenAI from 'openai';
 import { v2 as cloudinary } from 'cloudinary';
 

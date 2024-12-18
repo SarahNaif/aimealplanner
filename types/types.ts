@@ -49,4 +49,3 @@ export type Meals  = {
 export type MealPlan = {
   meals: Meals[];
 };
-

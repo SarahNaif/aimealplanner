@@ -3,14 +3,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-import { MealPlanType } from "@/components/types/types";
+import { MealPlanType } from "@/types/types";
 import { useMealPlanStore } from '@/store/mealStore';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../card";
-import { Label } from "../label";
-import { Input } from "../input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import { Selector } from "./Selector";
 import { Loader2 } from "lucide-react";
-import { Button } from "../button";
+import { Button } from "../ui/button";
 import { Span } from "next/dist/trace";
 
 export default function MealPlanForm() {

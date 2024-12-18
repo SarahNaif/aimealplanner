@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Meal, MealPlan } from '@/components/types/types'
+import { Meal, MealPlan } from '@/types/types'
 import { persist } from 'zustand/middleware';
 
 type MealPlanState = {

@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button';
-import CardMeal from '@/components/ui/Card/Card';
-import CardLoader from '@/components/ui/Card/CardLoader';
+import CardMeal from '@/components/shared/Card/Card';
+import CardLoader from '@/components/shared/Card/CardLoader';
 import { useMealPlanStore } from '@/store/mealStore';
 import React from 'react'
 

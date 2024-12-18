@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react'
-import { Meal, Meals } from '@/components/types/types';
+import { Meal, Meals } from '@/types/types';
 import { FaArrowRight } from "react-icons/fa6";
 import Link from 'next/link';
 import { useMealPlanStore } from '@/store/mealStore';
-import { Card, CardContent, CardFooter, CardHeader } from '../card';
-import { Badge } from '../badge';
+import { Card, CardContent, CardFooter, CardHeader } from '../../ui/card';
+import { Badge } from '../../ui/badge';
 import { ArrowRight } from 'lucide-react';
-import { Button } from '../button';
+import { Button } from '../../ui/button';
 
 type CardProps = {
     meal: Meal

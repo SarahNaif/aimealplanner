@@ -1,5 +1,5 @@
 "use client"
-import CardRecipe from '@/components/ui/Card/recipe/CardRecipe';
+import CardRecipe from '@/components/shared/Card/CardRecipe';
 
 
 

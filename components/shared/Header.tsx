@@ -2,8 +2,8 @@
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { ChefHat, Download, Menu } from 'lucide-react'
-import { Button } from "../button";
-import { SheetContent, SheetTrigger,Sheet } from "../sheet";
+import { Button } from "../ui/button";
+import { SheetContent, SheetTrigger,Sheet } from "../ui/sheet";
 import { usePathname } from "next/navigation";
 
 export default function Header() {

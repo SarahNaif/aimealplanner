@@ -1,5 +1,5 @@
 import { SignUp } from "@clerk/nextjs";
-import SqBackGrounds from "@/components/ui/Background/SqBackGrounds";
+import SqBackGrounds from "@/components/shared/SqBackGrounds";
 
 export default function SignUpPage() {
   return (

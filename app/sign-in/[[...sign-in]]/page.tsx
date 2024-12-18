@@ -1,4 +1,4 @@
-import SqBackGrounds from "@/components/ui/Background/SqBackGrounds";
+import SqBackGrounds from "@/components/shared/SqBackGrounds";
 
 import { SignIn } from "@clerk/nextjs";
 

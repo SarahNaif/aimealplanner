@@ -1,5 +1,5 @@
 import Link from "next/link";
-import IconGrid from "@/components/ui/IconGrid/IconGrid";
+import IconGrid from "@/components/shared/IconGrid/IconGrid";
 import { Button } from "@/components/ui/button";
 
 
