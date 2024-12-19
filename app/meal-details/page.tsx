@@ -18,35 +18,43 @@ const page : React.FC = () => {
 
     return (
      
-<main className="min-h-screen bg-gray-50 pt-24 p-8">
-        <div className="space-y-8 my-9">
-          <div className="flex justify-between">
-            <div className="space-y-2 mt-3">
-            <h1 className="text-slate-800 text-4xl font-bold">Your Daily Meal Plan</h1>
-            <p className="">
-              A balanced selection of nutritious meals totaling {totalCalories} calories.
-            </p>
-            </div>
-          </div>
-          
-          <div className="grid gap-6 md:grid-cols-2">
-          {!mealPlan ? (
-        Array.from({ length: 4 }).map((_, index) => (
-          <CardLoader key={index}/>
-        ))
-      ) : mealPlan?.meals?.length > 0 ? (
-        // Show Meals
-        mealPlan.meals.map((meal, index) => {
-          const mealKey = Object.keys(meal)[0];
-          return <CardMeal key={index} meal={meal[mealKey]} mealKey={mealKey} />;
-        })
-      ) : (
-        // No Meals Found
-        <div>No meals found</div>
-      )}
+<main className="pt-24  bg-gray-50">
+<div className="mx-auto max-w-7xl px-6 lg:px-8">
+  <div className="p-8">
+  <div className="space-y-8 my-9">
 
-          </div>
-        </div>
+
+
+<div className="flex justify-between">
+  <div className="space-y-2 mt-3">
+  <h1 className="text-slate-800 text-4xl font-bold">Your Daily Meal Plan</h1>
+  <p className="mt-6 text-lg leading-8 text-gray-600">
+    A balanced selection of nutritious meals totaling {totalCalories} calories.
+  </p>
+  </div>
+</div>
+
+<div className="grid gap-6 md:grid-cols-2">
+{!mealPlan ? (
+Array.from({ length: 4 }).map((_, index) => (
+<CardLoader key={index}/>
+))
+) : mealPlan?.meals?.length > 0 ? (
+// Show Meals
+mealPlan.meals.map((meal, index) => {
+const mealKey = Object.keys(meal)[0];
+return <CardMeal key={index} meal={meal[mealKey]} mealKey={mealKey} />;
+})
+) : (
+// No Meals Found
+<div>No meals found</div>
+)}
+
+</div>
+</div>
+</div>
+  </div>
+     
       </main>
 
       
