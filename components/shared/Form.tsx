@@ -12,6 +12,8 @@ import { Selector } from "./Selector";
 import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Span } from "next/dist/trace";
+import { useCreditStore } from "@/store/creditStore";
+import InsufficientCreditsDialog from "./InsufficientCreditsDialog";
 
 export default function MealPlanForm() {
 
@@ -26,10 +28,12 @@ export default function MealPlanForm() {
   });
 
   const setMealPlan = useMealPlanStore((state) => state.setMealPlan);
+  const { credits, minusCredit } = useCreditStore();
 
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
 
 
   const handleSelect = (name: string, value: string) => {
@@ -38,6 +42,8 @@ export default function MealPlanForm() {
       [name]: value,
     }));
   };
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -48,6 +54,14 @@ export default function MealPlanForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (credits <= 0) {
+      console.log("No credits available, showing dialog.");
+      setShowDialog(true);
+      return;
+    }
+
+
     setLoading(true);
 
     try {
@@ -72,11 +86,13 @@ export default function MealPlanForm() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
+      minusCredit();
       const data = await response.json();
+      
       if (data?.mealPlan) {
         setMealPlan(data.mealPlan);
         router.push("/meal-details");
-console.log(data.mealPlan)
+
         const newExclusions = data?.mealPlan?.meals?.map((meal: any) => {
           const mealType = Object.keys(meal)[0];
           return meal[mealType]?.dishName;
@@ -92,7 +108,8 @@ console.log(data.mealPlan)
       setLoading(false);
     }
   };
-
+  const handleDialogClose = () => setShowDialog(false);
+  const handlePurchaseCredits = () => router.push("/credits");
   return (
     <Card className="absolute max-w-xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white ">
       <CardHeader>
@@ -185,6 +202,17 @@ console.log(data.mealPlan)
           {loading && <span>Please be patient this may take 1 to 2 minutes</span>}
         </form>
       </CardContent>
+
+      {showDialog && (
+        <InsufficientCreditsDialog
+         
+          onClose={handleDialogClose}
+          onAction={handlePurchaseCredits}
+          title="Not Enough Credits"
+          message="You don't have enough credits to generate a meal plan. Please purchase more credits to proceed."
+          actionText="Purchase Credits" isOpen={showDialog}        />
+      )}
+
     </Card>
   );
 }

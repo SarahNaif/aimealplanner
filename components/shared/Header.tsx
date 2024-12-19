@@ -5,10 +5,11 @@ import { ChefHat, Download, Menu } from 'lucide-react'
 import { Button } from "../ui/button";
 import { SheetContent, SheetTrigger,Sheet } from "../ui/sheet";
 import { usePathname } from "next/navigation";
+import { useCreditStore } from "@/store/creditStore";
 
 export default function Header() {
 const pathname = usePathname()
-
+const { credits } = useCreditStore();
   return (
     <header className={`absolute z-10 flex w-full items-center justify-between px-5 ${pathname === '/' ? 'bg-transparent': 'bg-white border-b'} `}>
       <div className="flex h-14 w-full items-center justify-between">
@@ -27,8 +28,8 @@ const pathname = usePathname()
         <div className="flex items-center gap-2">
      
           <nav className="hidden md:flex flex-1 items-center gap-7 px-6">
-            <Link href="/meal-planner" className="text-sm font-semibold  py-1 px-2 rounded-md text-black">
-              Credit:  <span className="mx-2">2</span>
+            <Link href="/credits" className="text-sm font-semibold  py-1 px-2 rounded-md text-black">
+              Credit:  <span className="mx-1 font-bold">{credits}</span>
             </Link>
           </nav>
           <SignedOut>
