@@ -11,21 +11,26 @@ import { Input } from "../ui/input";
 import { Selector } from "./Selector";
 import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
-import { Span } from "next/dist/trace";
 import { useCreditStore } from "@/store/creditStore";
 import InsufficientCreditsDialog from "./InsufficientCreditsDialog";
 
-export default function MealPlanForm() {
+import { useAuth } from "@clerk/nextjs";
 
+export default function MealPlanForm() {
+  const { isLoaded, userId, sessionId, getToken } = useAuth()
+  if (!isLoaded || !userId) {
+    return null
+  }
   
-  const [formData, setFormData] = useState<MealPlanType>({
+  const [formData, setFormData] = useState<MealPlanType>(() => ({
+    userId: userId,
     weight: 0,
     age: 0,
     height: 0,
     meals: "",
-    gender:"",
-    goal:"",
-  });
+    gender: "",
+    goal: "",
+  }));
 
   const setMealPlan = useMealPlanStore((state) => state.setMealPlan);
   const { credits, minusCredit } = useCreditStore();
@@ -66,18 +71,16 @@ export default function MealPlanForm() {
 
     try {
 
-      const storedExclusions = localStorage.getItem('exclusions');
-      const exclusions = storedExclusions ? JSON.parse(storedExclusions) : [];
-
       const requestBody = {
         ...formData,
-        exclusions, // Adding exclusions to the API request
+        exclusions: [], // Adding exclusions to the API request
       };
-
+      const token = await getToken();
       const response = await fetch('/api/generateMealPlan', {
         method: 'POST',  // Ensure this is POST
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(requestBody)
       });
@@ -93,11 +96,7 @@ export default function MealPlanForm() {
         setMealPlan(data.mealPlan);
         router.push("/meal-details");
 
-        const newExclusions = data?.mealPlan?.meals?.map((meal: any) => {
-          const mealType = Object.keys(meal)[0];
-          return meal[mealType]?.dishName;
-        }) || [];
-        localStorage.setItem('exclusions', JSON.stringify(newExclusions));
+      
 
       } else {
         throw new Error('Invalid response format');
@@ -110,6 +109,9 @@ export default function MealPlanForm() {
   };
   const handleDialogClose = () => setShowDialog(false);
   const handlePurchaseCredits = () => router.push("/credits");
+
+
+  
   return (
     <Card className="absolute max-w-xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white ">
       <CardHeader>
@@ -203,7 +205,7 @@ export default function MealPlanForm() {
         </form>
       </CardContent>
 
-      {showDialog && (
+     {showDialog && (
         <InsufficientCreditsDialog
          
           onClose={handleDialogClose}
@@ -211,7 +213,7 @@ export default function MealPlanForm() {
           title="Not Enough Credits"
           message="You don't have enough credits to generate a meal plan. Please purchase more credits to proceed."
           actionText="Purchase Credits" isOpen={showDialog}        />
-      )}
+      )} 
 
     </Card>
   );

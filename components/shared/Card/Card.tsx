@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { Meal, Meals } from '@/types/types';
+import { Meal} from '@/types/types';
 import { FaArrowRight } from "react-icons/fa6";
 import Link from 'next/link';
 import { useMealPlanStore } from '@/store/mealStore';

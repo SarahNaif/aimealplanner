@@ -2,12 +2,12 @@
 import Image from 'next/image'
 import Link from 'next/link';
 import { useMealPlanStore } from '@/store/mealStore';
-import { Button } from '../../button';
+import { Button } from '../../ui/button';
 import { ArrowLeft, Clock, CookingPot, Users } from 'lucide-react';
-import { Badge } from '../../badge';
-import { Card, CardContent, CardHeader } from '../../card';
+import { Badge } from '../../ui/badge';
+import { Card, CardContent, CardHeader } from '../../ui/card';
 import { Suspense, useState } from 'react';
-import { Skeleton } from '../../skeleton';
+import { Skeleton } from '../../ui/skeleton';
 import Loading from '@/app/recipe/loading';
 
 

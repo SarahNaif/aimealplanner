@@ -10,6 +10,7 @@ export interface BackgroundProps extends React.HTMLProps<HTMLDivElement> {
 
 
 export interface MealPlanType {
+  userId: string;
   weight: number;
   age: number;
   height: number;
@@ -34,18 +35,17 @@ export type Recipe = {
 };
 
 export type Meal = {
+  type: string;
   dishName: string;
-  description: string; 
+  description: string;
   recipe: Recipe;
   imageUrl: string;
   
 };
 
-export type Meals  = {
-  [key: string]: Meal;
-};
+
 
 
 export type MealPlan = {
-  meals: Meals[];
+  meals: Meal[];
 };

@@ -11,8 +11,7 @@ const page : React.FC = () => {
     console.log(mealPlan)
 
     const totalCalories = mealPlan?.meals?.reduce((total, meal) => {
-      const mealKey = Object.keys(meal)[0];
-      const cal = meal[mealKey].recipe.nutrition.calories || 0
+      const cal = meal.recipe.nutrition.calories || 0
       return total + cal
   }, 0);
 
@@ -42,8 +41,7 @@ Array.from({ length: 4 }).map((_, index) => (
 ) : mealPlan?.meals?.length > 0 ? (
 // Show Meals
 mealPlan.meals.map((meal, index) => {
-const mealKey = Object.keys(meal)[0];
-return <CardMeal key={index} meal={meal[mealKey]} mealKey={mealKey} />;
+return <CardMeal key={index} meal={meal} mealKey={meal.type} />;
 })
 ) : (
 // No Meals Found
