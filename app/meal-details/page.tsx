@@ -6,7 +6,7 @@ import { useMealPlanStore } from '@/store/mealStore';
 import React from 'react'
 
 
-const page : React.FC = () => {
+const Page : React.FC = () => {
     const mealPlan = useMealPlanStore((state) => state.mealPlan);
     console.log(mealPlan)
 
@@ -59,4 +59,4 @@ return <CardMeal key={index} meal={meal} mealKey={meal.type} />;
     )
 }
 
-export default page
+export default Page
