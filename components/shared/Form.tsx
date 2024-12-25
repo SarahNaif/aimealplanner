@@ -18,19 +18,16 @@ import { useAuth } from "@clerk/nextjs";
 
 export default function MealPlanForm() {
   const { isLoaded, userId, sessionId, getToken } = useAuth()
-  if (!isLoaded || !userId) {
-    return null
-  }
-  
-  const [formData, setFormData] = useState<MealPlanType>(() => ({
-    userId: userId,
+ 
+  const [formData, setFormData] = useState<MealPlanType>({
+    userId: userId || '',
     weight: 0,
     age: 0,
     height: 0,
     meals: "",
     gender: "",
     goal: "",
-  }));
+  });
 
   const setMealPlan = useMealPlanStore((state) => state.setMealPlan);
   const { credits, minusCredit } = useCreditStore();
@@ -39,7 +36,11 @@ export default function MealPlanForm() {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
-
+  
+  if (!isLoaded || !userId) {
+    return null
+  }
+  
 
   const handleSelect = (name: string, value: string) => {
     setFormData((prev) => ({
