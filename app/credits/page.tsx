@@ -1,12 +1,14 @@
-import { plans } from '@/constants/index'
+
 import CardPlan from '@/components/shared/Card/CardPlan'
+import { plans } from '@/constants/plan'
 import { useAuth } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
 
 
 const Page : React.FC = () => {
-const {userId} = useAuth()
-if (!userId) redirect("/sign-in");
+
+
+
     return (
         <div className="pt-24  bg-gray-50">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -22,7 +24,7 @@ if (!userId) redirect("/sign-in");
                         </div>
                         <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                             {plans.map((plan, index) => (
-                                <CardPlan key={index} plan={plan} userId={userId} />
+                                <CardPlan key={index} plan={plan} index={index}  />
                                
                             ))}
                         </div>

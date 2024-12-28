@@ -1,18 +1,22 @@
 "use server";
 
 import Stripe from "stripe";
-import { PlanName, PLANS } from '../../constants/plan';
 
 
-export async function checkoutCredits(userId: string, selectedPlan: string) {
+
+export async function checkoutCredits(userId: string, selectedPlan: { name: string, price: number, credits: number }) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+console.log(selectedPlan)
 
-  const planDetails = PLANS[selectedPlan as PlanName];
 
-  if (!planDetails) {
+  if (!selectedPlan) {
+    console.error(`Invalid plan: ${selectedPlan}`);
     throw new Error("Invalid plan selected.");
+   
   }
+
+  
 
   const session = await stripe.checkout.sessions.create({
 
@@ -20,13 +24,16 @@ export async function checkoutCredits(userId: string, selectedPlan: string) {
       {
         price_data: {
           currency: 'usd',
-          unit_amount: planDetails.price * 100,
-          product_data: { name: selectedPlan },
+          unit_amount: selectedPlan.price * 100,
+          product_data: { 
+            name: selectedPlan.name,
+            description: `Get ${selectedPlan.credits} credits for just $${selectedPlan.price} with our AI meal planner! Create personalized meal plans tailored to your calorie, protein, fat, and carb needs. Perfect for exploring the service at a great price while discovering meals that suit your lifestyle.`,
+          },
         },
         quantity: 1,
       },
     ],
-    metadata: { userId, selectedPlan, credits: planDetails.credits },
+    metadata: { userId, name: selectedPlan.name ,price: selectedPlan.price, credits: selectedPlan.credits},
     mode: 'payment',
     success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/meal-planner`,
     cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
@@ -34,4 +41,3 @@ export async function checkoutCredits(userId: string, selectedPlan: string) {
 
   return session.url;
 }
-
