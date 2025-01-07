@@ -20,14 +20,16 @@ export async function POST(request: Request) {
 
   if (event.type === "checkout.session.completed") {
     const { metadata } = event.data.object as any;
-    const { userId, selectedPlan, credits } = metadata;
+    const userId = metadata.userId;
+    const selectedPlan = metadata.name; 
+    const credits = Number(metadata.credits); 
 
     await connectToDatabase();
 
     await CreditModel.findOneAndUpdate(
       { userId },
       {
-        credits: Number(credits),
+        $inc:{credits: Number(credits)},
         plan: selectedPlan,
         lastUpdated: new Date(),
       },

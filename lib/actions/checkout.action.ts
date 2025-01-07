@@ -1,13 +1,12 @@
 "use server";
-
 import Stripe from "stripe";
 
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function checkoutCredits(userId: string, selectedPlan: { name: string, price: number, credits: number }) {
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-console.log(selectedPlan)
+  
+
 
 
   if (!selectedPlan) {
@@ -33,10 +32,10 @@ console.log(selectedPlan)
         quantity: 1,
       },
     ],
-    metadata: { userId, name: selectedPlan.name ,price: selectedPlan.price, credits: selectedPlan.credits},
+    metadata: { userId, name: selectedPlan.name , credits: selectedPlan.credits},
     mode: 'payment',
-    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/meal-planner`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment-success?userId=${userId}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/`,
   });
 
   return session.url;

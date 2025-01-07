@@ -4,7 +4,8 @@ import { persist } from 'zustand/middleware'
 
 interface CreditStore {
     credits: number;
-    setCredits: (newCredits: number) => void;
+    plan: string,
+    setCredits: (newCredits: number, newPlan: string) => void;
     minusCredit: ()=> void;
 }
 
@@ -13,7 +14,8 @@ export const useCreditStore = create (
     persist<CreditStore>(
         (set)=> ({
             credits: 2,
-            setCredits: (newCredits)=> set({credits: newCredits}),
+            plan: 'Free',
+            setCredits: (newCredits, newPlan)=> set({credits: newCredits, plan: newPlan}),
             minusCredit: ()=> set((state)=> ({credits: state.credits - 1})),
         }),
         {
