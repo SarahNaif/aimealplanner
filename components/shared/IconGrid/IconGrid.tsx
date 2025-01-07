@@ -3,14 +3,14 @@ import React from "react";
 import Image from "next/image"; 
 
 const icons : string[]= [
-  "/foodicon/fries.png",
-  "/foodicon/cheff.png",
-  "/foodicon/cola.png",
-  "/foodicon/chicken.png",
-  "/foodicon/avo.png",
-  "/foodicon/chef.png",
-  "/foodicon/chicken.png",
-  "/foodicon/donut.png",
+  "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273878/icon/fries_wfexya.png",
+  "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273870/icon/cheff_yvpuib.png",
+  "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273879/icon/cola_w5grmf.png",
+  "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273885/icon/chicken_uafjfs.png",
+  "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273879/icon/avo_qwbggg.png",
+  "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273879/icon/chef_ismygr.png",
+  "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273885/icon/chicken_uafjfs.png",
+  "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273881/icon/donut_rbiaq2.png",
 ];
 
 const IconGrid: React.FC  = () => {
