@@ -1,4 +1,4 @@
-"use clients"
+"use client"
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCreditStore } from '@/store/creditStore';
