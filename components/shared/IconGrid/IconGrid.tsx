@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image"; 
+import { Skeleton } from "@/components/ui/skeleton";
 
 const icons : string[]= [
   "https://res.cloudinary.com/dvukj9sqf/image/upload/v1736273878/icon/fries_wfexya.png",
@@ -14,9 +15,14 @@ const icons : string[]= [
 ];
 
 const IconGrid: React.FC  = () => {
+
+   const [imageLoaded, setImageLoaded] = useState(false);
+   
   return (
     <div className="grid grid-cols-4 grid-rows-2 gap-4 absolute inset-0">
     {icons.map((icon, index) => (
+
+    
       <div
         key={index}
         className={`relative flex items-center justify-center transform ${
@@ -27,14 +33,24 @@ const IconGrid: React.FC  = () => {
             : "translate-x-10 -translate-y-35"
         }`}
       >
-        <Image
-          className="w-20 h-20"
+
+<div>
+{!imageLoaded && (
+            <Skeleton className="w-20 h-20 rounded-md" />
+          )}
+<Image
+          className={`w-20 h-20  ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           src={icon}
           alt={`food-icon-${index}`}
           width={80}
           height={80}
+          onLoad={() => setImageLoaded(true)}
         />
+
+</div>
+       
       </div>
+      
     ))}
   </div>
   )
