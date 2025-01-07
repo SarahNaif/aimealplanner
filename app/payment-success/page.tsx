@@ -1,14 +1,15 @@
+"use clients"
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCreditStore } from '@/store/creditStore';
 import { Check, CreditCard } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 const page: React.FC = () => {
-  const router = useRouter();
-  const { userId } = router.query; 
+  const SearchParams = useSearchParams()
+  const  userId  = SearchParams.get('userId');; 
   const { credits, plan, setCredits } = useCreditStore();
    
 
