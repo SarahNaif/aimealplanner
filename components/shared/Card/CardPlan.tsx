@@ -16,11 +16,13 @@ interface CardPlanProps {
 
 const CardPlan: React.FC<CardPlanProps> = ({ plan, index}) => {
     const {userId} = useAuth();
-    if (!userId) return null
+    
     
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
+  if (!userId) return null
+
   const handleClick = async () => {
     if (loading ) return
     setLoading(true)

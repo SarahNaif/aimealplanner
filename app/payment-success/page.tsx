@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-const page: React.FC = () => {
+const Page: React.FC = () => {
   const SearchParams = useSearchParams()
   const  userId  = SearchParams.get('userId');; 
   const { credits, plan, setCredits } = useCreditStore();
@@ -34,7 +34,7 @@ const page: React.FC = () => {
 
       fetchUserCredits();
     }
-  }, [userId]);
+  }, [userId, setCredits]);
   return (
 <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Card className="w-full max-w-md">
@@ -58,12 +58,12 @@ const page: React.FC = () => {
         </CardContent>
         <CardFooter className="flex justify-center">
           <Button className="w-full max-w-xs">
-            <Link href="/meal-planner"></Link>
-            Generate Recipe's</Button>
+            <Link href="/meal-planner">Generate Recipe&apos;s</Link>
+            </Button>
         </CardFooter>
       </Card>
     </div>
   )
 }
 
-export default page
+export default Page
