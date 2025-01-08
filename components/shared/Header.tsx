@@ -1,15 +1,36 @@
 'use client'
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { ChefHat, Download, Menu } from 'lucide-react'
 import { Button } from "../ui/button";
 import { SheetContent, SheetTrigger,Sheet } from "../ui/sheet";
 import { usePathname } from "next/navigation";
 import { useCreditStore } from "@/store/creditStore";
+import { useEffect } from "react";
 
 export default function Header() {
-const pathname = usePathname()
-const { credits } = useCreditStore();
+const pathname = usePathname();
+const { userId } = useAuth();
+const { setCredits, credits} = useCreditStore();
+
+  useEffect(() => {
+    if (userId) {
+      // Fetch user credits from your API
+      const fetchUserCredits = async () => {
+        try {
+          const res = await fetch(`/api/credits?userId=${userId}`);
+          const data = await res.json();
+          if (data.credits && data.plan) {
+            setCredits(data.credits, data.plan); // Store in Zustand
+          }
+        } catch (err) {
+          console.error("Error fetching credits:", err);
+        }
+      };
+
+      fetchUserCredits();
+    }
+  }, [userId, setCredits]);
   return (
     <header className={`absolute z-10 flex w-full items-center justify-between px-5 ${pathname === '/' ? 'bg-transparent': 'bg-white border-b'} `}>
       <div className="flex h-14 w-full items-center justify-between">

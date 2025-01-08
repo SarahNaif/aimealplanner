@@ -10,31 +10,8 @@ import React, { useEffect, useState } from 'react'
 const Page: React.FC = () => {
   const SearchParams = useSearchParams()
   const  userId  = SearchParams.get('userId');; 
-  const { credits, plan, setCredits } = useCreditStore();
+  const { credits, plan } = useCreditStore();
    
-
-
-  useEffect(() => {
-    if (userId) {
-     
-      const fetchUserCredits = async () => {
-        try {
-          const res = await fetch(`/api/credits?userId=${userId}`);
-          const data = await res.json();
-          if (data.credits !== undefined && data.plan) {
-            setCredits(
-               data.credits,
-               data.plan
-            );
-          }
-        } catch (err) {
-          console.error("Error fetching user credits:", err);
-        }
-      };
-
-      fetchUserCredits();
-    }
-  }, [userId, setCredits]);
   return (
 <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Card className="w-full max-w-md">
