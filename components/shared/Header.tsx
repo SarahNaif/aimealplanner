@@ -1,5 +1,5 @@
 'use client'
-import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton, useAuth, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { ChefHat, Download, Menu } from 'lucide-react'
 import { Button } from "../ui/button";
@@ -12,10 +12,11 @@ export default function Header() {
 const pathname = usePathname();
 const { userId } = useAuth();
 const { setCredits, credits} = useCreditStore();
+const clerk = useClerk()
 
   useEffect(() => {
     if (userId) {
-      // Fetch user credits from your API
+      
       const fetchUserCredits = async () => {
         try {
           const res = await fetch(`/api/credits?userId=${userId}`);
@@ -31,6 +32,13 @@ const { setCredits, credits} = useCreditStore();
       fetchUserCredits();
     }
   }, [userId, setCredits]);
+
+  const handleSignOut = () => {
+    clerk.signOut(); 
+    setCredits(2, "Free"); 
+  };
+
+
   return (
     <header className={`absolute z-10 flex w-full items-center justify-between px-5 ${pathname === '/' ? 'bg-transparent': 'bg-white border-b'} `}>
       <div className="flex h-14 w-full items-center justify-between">
@@ -59,6 +67,9 @@ const { setCredits, credits} = useCreditStore();
             </Button>
           </SignedOut>
           <SignedIn>
+          <Button onClick={handleSignOut} variant="destructive" size="sm" className="px-4">
+              Sign Out
+            </Button>
             <UserButton />
           </SignedIn>
           <Sheet>
