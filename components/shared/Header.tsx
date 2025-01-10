@@ -11,7 +11,7 @@ import { useEffect } from "react";
 export default function Header() {
 const pathname = usePathname();
 const { userId } = useAuth();
-const { setCredits, credits} = useCreditStore();
+const { setCredits, credits, resetCredits} = useCreditStore();
 const clerk = useClerk()
 
   useEffect(() => {
@@ -30,13 +30,11 @@ const clerk = useClerk()
       };
 
       fetchUserCredits();
+    }else{
+      resetCredits();
     }
   }, [userId, setCredits]);
 
-  const handleSignOut = () => {
-    clerk.signOut(); 
-    setCredits(2, "Free"); 
-  };
 
 
   return (
@@ -67,9 +65,6 @@ const clerk = useClerk()
             </Button>
           </SignedOut>
           <SignedIn>
-          <Button onClick={handleSignOut} variant="destructive" size="sm" className="px-4">
-              Sign Out
-            </Button>
             <UserButton />
           </SignedIn>
           <Sheet>

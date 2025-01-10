@@ -7,6 +7,7 @@ interface CreditStore {
     plan: string,
     setCredits: (newCredits: number, newPlan: string) => void;
     minusCredit: ()=> void;
+    resetCredits: ()=> void;
 }
 
 
@@ -17,6 +18,7 @@ export const useCreditStore = create (
             plan: 'Free',
             setCredits: (newCredits, newPlan)=> set({credits: newCredits, plan: newPlan}),
             minusCredit: ()=> set((state)=> ({credits: state.credits - 1})),
+            resetCredits: () => set({ credits: 2, plan: 'Free' }),
         }),
         {
             name: 'credits'
