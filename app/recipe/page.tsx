@@ -3,7 +3,7 @@ import CardRecipe from '@/components/shared/Card/CardRecipe';
 
 
 
-const page: React.FC = () => {
+const Page: React.FC = () => {
     return (
         <div>
            
@@ -14,4 +14,4 @@ const page: React.FC = () => {
     )
 }
 
-export default page
+export default Page

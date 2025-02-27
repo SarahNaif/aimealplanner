@@ -33,7 +33,7 @@ const clerk = useClerk()
     }else{
       resetCredits();
     }
-  }, [userId, setCredits]);
+  }, [userId, setCredits, resetCredits]);
 
 
 
