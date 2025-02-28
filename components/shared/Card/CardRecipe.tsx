@@ -3,13 +3,14 @@ import Image from 'next/image'
 import Link from 'next/link';
 import { useMealPlanStore } from '@/store/mealStore';
 import { Button } from '../../ui/button';
-import { ArrowLeft, Clock, CookingPot, Users } from 'lucide-react';
+import { ArrowLeft, Clock, CookingPot, FileDown, Users } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent, CardHeader } from '../../ui/card';
 import { Suspense, useState } from 'react';
 import { Skeleton } from '../../ui/skeleton';
 import Loading from '@/app/recipe/loading';
-
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import RecipePDF from '../RecipePdf';
 
 const CardRecipe : React.FC = () => {
     const currentRecipe = useMealPlanStore((state) => state.currentRecipe);
@@ -26,12 +27,27 @@ const CardRecipe : React.FC = () => {
 <div className="mx-auto max-w-4xl my-6">
 
   <div className="mb-8">
+    <div className="flex justify-between">
     <Link href="/meal-details">
       <Button variant="ghost" className="mb-4">
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Meal Plan
       </Button>
     </Link>
+
+    <PDFDownloadLink
+            document={<RecipePDF recipe={currentRecipe} />}
+            fileName={`${dishName}.pdf`}
+          >
+      <Button variant="ghost" className="mb-4">
+        <FileDown className="ml-2 h-4 w-4" />
+       Download Recipe
+      </Button>
+
+      </PDFDownloadLink>
+
+    </div>
+  
     <h1 className="text-4xl font-bold mb-2">{dishName}</h1>
     <p className="text-lg text-muted-foreground mb-4">{description}</p>
     <div className="flex flex-wrap gap-4">

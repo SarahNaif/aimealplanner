@@ -58,3 +58,4 @@ export type Plan = {
   emoji: string;
   features: string[];
 }
+
