@@ -6,11 +6,9 @@ import { Button } from '../../ui/button';
 import { ArrowLeft, Clock, CookingPot, FileDown, Users } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent, CardHeader } from '../../ui/card';
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import { Skeleton } from '../../ui/skeleton';
-import Loading from '@/app/recipe/loading';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import RecipePDF from '../RecipePdf';
+import dynamic from 'next/dynamic';
 
 const CardRecipe : React.FC = () => {
     const currentRecipe = useMealPlanStore((state) => state.currentRecipe);
@@ -19,8 +17,12 @@ const CardRecipe : React.FC = () => {
         return <div>No recipe selected.</div>;
     }
     const { dishName, description, imageUrl, recipe: { ingredients, instructions , nutrition, prepTime, cookTime} } = currentRecipe;
- 
-     
+    const RecipePDF = dynamic(() => import('../RecipePdf'), { ssr: false });
+
+    const PDFDownloadLink = dynamic(
+      () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+      { ssr: false }
+    );
   return (
 
 <div className="min-h-screen bg-gray-50 pt-24 ">
