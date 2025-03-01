@@ -11,7 +11,7 @@ import { useEffect } from "react";
 export default function Header() {
 const pathname = usePathname();
 const { userId } = useAuth();
-const { setCredits, credits, resetCredits} = useCreditStore();
+const { setCredits, credits} = useCreditStore();
 const clerk = useClerk()
 
   useEffect(() => {
@@ -21,8 +21,9 @@ const clerk = useClerk()
         try {
           const res = await fetch(`/api/credits?userId=${userId}`);
           const data = await res.json();
+          console.log("Fetched credits data:", data); 
           if (data.credits && data.plan) {
-            setCredits(data.credits, data.plan); // Store in Zustand
+            setCredits(data.credits, data.plan); 
           }
         } catch (err) {
           console.error("Error fetching credits:", err);
@@ -30,12 +31,10 @@ const clerk = useClerk()
       };
 
       fetchUserCredits();
-    }else{
-      resetCredits();
     }
-  }, [userId, setCredits, resetCredits]);
+  }, [userId]);
 
-
+console.log("credit :",credits)
 
   return (
     <header className={`absolute z-10 flex w-full items-center justify-between px-5 ${pathname === '/' ? 'bg-transparent': 'bg-white border-b'} `}>

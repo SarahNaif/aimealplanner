@@ -1,3 +1,5 @@
+"use server";
+
 import CreditModel from '../database/models/Credit';
 import { connectToDatabase } from '../database/mongodb';
 

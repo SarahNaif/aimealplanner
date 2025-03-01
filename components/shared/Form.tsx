@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+
 
 import { MealPlanType } from "@/types/types";
 import { useMealPlanStore } from '@/store/mealStore';
@@ -15,6 +15,7 @@ import { useCreditStore } from "@/store/creditStore";
 import InsufficientCreditsDialog from "./InsufficientCreditsDialog";
 
 import { useAuth } from "@clerk/nextjs";
+
 
 export default function MealPlanForm() {
   const { isLoaded, userId, sessionId, getToken } = useAuth()
@@ -30,17 +31,17 @@ export default function MealPlanForm() {
   });
 
   const setMealPlan = useMealPlanStore((state) => state.setMealPlan);
-  const { credits, minusCredit } = useCreditStore();
+  const { credits, minusCredit, setCredits } = useCreditStore();
 
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  
+
+
   if (!isLoaded || !userId) {
-    return null
+    return null;
   }
-  
 
   const handleSelect = (name: string, value: string) => {
     setFormData((prev) => ({
@@ -49,69 +50,66 @@ export default function MealPlanForm() {
     }));
   };
 
-
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: Number(e.target.value)
+      [e.target.name]: Number(e.target.value),
     });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (credits <= 0) {
+    if ((credits ?? 0) <= 0) {
       console.log("No credits available, showing dialog.");
       setShowDialog(true);
       return;
     }
 
-
     setLoading(true);
 
     try {
 
-      const requestBody = {
-        ...formData,
-        exclusions: [], // Adding exclusions to the API request
-      };
-      const token = await getToken();
-      const response = await fetch('/api/generateMealPlan', {
-        method: 'POST',  // Ensure this is POST
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(requestBody)
-      });
+      await minusCredit(userId);
+       
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+        const requestBody = {
+          ...formData,
+          exclusions: [], 
+        };
+        const token = await getToken();
+        const response = await fetch('/api/generateMealPlan', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestBody),
+        });
 
-      minusCredit();
-      const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data?.mealPlan) {
+          setMealPlan(data.mealPlan);
+          router.push("/meal-details");
+         
+        } else {
+          throw new Error('Invalid response format');
+        }
       
-      if (data?.mealPlan) {
-        setMealPlan(data.mealPlan);
-        router.push("/meal-details");
-
-      
-
-      } else {
-        throw new Error('Invalid response format');
-      }
     } catch (error) {
       console.error('Error generating meal plan:', error);
+
+      setCredits((credits ?? 0) + 1, 'Free'); 
     } finally {
       setLoading(false);
     }
   };
+
   const handleDialogClose = () => setShowDialog(false);
   const handlePurchaseCredits = () => router.push("/credits");
-
-
   
   return (
     <Card className="absolute max-w-xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white ">
