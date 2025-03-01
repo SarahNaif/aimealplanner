@@ -2,8 +2,9 @@
 
 const nextConfig = {
   experimental: {
-    esmExternals: true, 
+    esmExternals: false,
   },
+  transpilePackages: ["@react-pdf/renderer"],
   images: {
     remotePatterns: [
       {
