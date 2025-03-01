@@ -6,7 +6,7 @@ import { Button } from '../../ui/button';
 import { ArrowLeft, Clock, CookingPot, FileDown, Users } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent, CardHeader } from '../../ui/card';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Skeleton } from '../../ui/skeleton';
 import dynamic from 'next/dynamic';
 
@@ -16,13 +16,21 @@ const CardRecipe : React.FC = () => {
     if (!currentRecipe) {
         return <div>No recipe selected.</div>;
     }
-    const { dishName, description, imageUrl, recipe: { ingredients, instructions , nutrition, prepTime, cookTime} } = currentRecipe;
+    const { dishName, description, imageUrl, recipe } = currentRecipe || {};
+    if (!recipe) return <div>No recipe details available.</div>;
+    const { ingredients, instructions, nutrition, prepTime, cookTime } = recipe;
     const RecipePDF = dynamic(() => import('../RecipePdf'), { ssr: false });
 
     const PDFDownloadLink = dynamic(
       () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
       { ssr: false }
     );
+
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+        // Safe client-side code here
+      }
+    }, []);
   return (
 
 <div className="min-h-screen bg-gray-50 pt-24 ">
@@ -37,16 +45,17 @@ const CardRecipe : React.FC = () => {
       </Button>
     </Link>
 
-    <PDFDownloadLink
-            document={<RecipePDF recipe={currentRecipe} />}
-            fileName={`${dishName}.pdf`}
-          >
-      <Button variant="ghost" className="mb-4">
-        <FileDown className="ml-2 h-4 w-4" />
-       Download Recipe
-      </Button>
-
-      </PDFDownloadLink>
+    {typeof window !== 'undefined' && (
+  <PDFDownloadLink
+    document={<RecipePDF recipe={currentRecipe} />}
+    fileName={`${dishName}.pdf`}
+  >
+    <Button variant="ghost" className="mb-4">
+      <FileDown className="ml-2 h-4 w-4" />
+      Download Recipe
+    </Button>
+  </PDFDownloadLink>
+)}
 
     </div>
   
