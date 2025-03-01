@@ -1,14 +1,9 @@
-'use client';
+ // eslint-disable-next-line jsx-a11y/alt-text
+'use client'; // Mark this as a client component
 
-import dynamic from 'next/dynamic';
-import { StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, Image, StyleSheet, PDFViewer } from '@react-pdf/renderer';
 import { Meal } from '@/types/types';
-
-const Document = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.Document), { ssr: false });
-const Page = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.Page), { ssr: false });
-const Text = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.Text), { ssr: false });
-const View = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.View), { ssr: false });
-const Image = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.Image), { ssr: false });
+import { useEffect, useState } from 'react';
 
 const styles = StyleSheet.create({
   page: {
@@ -43,32 +38,40 @@ interface RecipePDFProps {
 }
 
 const RecipePDF: React.FC<RecipePDFProps> = ({ recipe }) => {
-  const { dishName, description, imageUrl, recipe: { ingredients, instructions, nutrition } } = recipe;
-
+  const { dishName, description, imageUrl, recipe: { ingredients, instructions, nutrition, prepTime, cookTime } } = recipe;
+ 
   return (
     <Document>
       <Page style={styles.page}>
         <Text style={styles.title}>{dishName}</Text>
         <Text style={styles.text}>{description}</Text>
-
-        {imageUrl && <Image src={imageUrl} style={styles.image}  />}
-
+        {imageUrl && (
+          <Image
+            src={imageUrl}
+            style={styles.image}
+           
+          />
+        )}
         <View style={styles.section}>
           <Text style={styles.subtitle}>Nutrition</Text>
-          <Text style={styles.text}>Calories: {nutrition.calories} Cal per serving</Text>
+          <Text style={styles.text}>
+            Calories: {nutrition.calories} Cal per serving
+          </Text>
         </View>
-
         <View style={styles.section}>
           <Text style={styles.subtitle}>Ingredients</Text>
           {ingredients.map((ingredient, index) => (
-            <Text key={index} style={styles.text}>{ingredient}</Text>
+            <Text key={index} style={styles.text}>
+              {ingredient}
+            </Text>
           ))}
         </View>
-
         <View style={styles.section}>
           <Text style={styles.subtitle}>Instructions</Text>
           {instructions.map((instruction, index) => (
-            <Text key={index} style={styles.text}>{instruction}</Text>
+            <Text key={index} style={styles.text}>
+              {instruction}
+            </Text>
           ))}
         </View>
       </Page>
@@ -76,4 +79,18 @@ const RecipePDF: React.FC<RecipePDFProps> = ({ recipe }) => {
   );
 };
 
-export default RecipePDF;
+const PDFView: React.FC<RecipePDFProps> = ({ recipe }) => {
+
+    const [client, setClient] = useState(false)
+
+    useEffect(() => {
+        setClient(true)
+    }, [])
+
+    return(
+    <PDFViewer>
+        <RecipePDF recipe={recipe}/>
+    </PDFViewer>
+    )
+}
+export default PDFView
