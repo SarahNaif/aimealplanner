@@ -88,9 +88,9 @@ const PDFView: React.FC<RecipePDFProps> = ({ recipe }) => {
     }, [])
 
     return(
-    <PDFViewer>
+
         <RecipePDF recipe={recipe}/>
-    </PDFViewer>
+
     )
 }
 export default PDFView

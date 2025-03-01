@@ -1,4 +1,4 @@
-'use client'; // Mark this as a client component
+'use client'; 
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
@@ -20,10 +20,7 @@ const PDFDownloadLink = dynamic(
   }
 );
 
-// Dynamically import the RecipePDF component with SSR disabled
-const RecipePDF = dynamic(() => import('../../shared/RecipePdf'), {
-  ssr: false, // Ensure this component is only loaded on the client side
-});
+
 
 const CardRecipe: React.FC = () => {
   const currentRecipe = useMealPlanStore((state) => state.currentRecipe);
@@ -49,7 +46,7 @@ const CardRecipe: React.FC = () => {
               </Button>
             </Link>
 
-            <PDFDownloadLink document={<PDFView recipe={currentRecipe} />} fileName={`${dishName}.pdf`}>
+            <PDFDownloadLink document={<PDFView recipe={currentRecipe} />} fileName={`recipe.pdf`}>
               {({ loading }) => (
                 <Button variant="ghost" className="mb-4">
                   <FileDown className="ml-2 h-4 w-4" />
