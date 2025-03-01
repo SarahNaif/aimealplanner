@@ -1,6 +1,6 @@
 'use client'; 
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,30 +10,34 @@ import { ArrowLeft, Clock, CookingPot, FileDown } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent, CardHeader } from '../../ui/card';
 import { Skeleton } from '../../ui/skeleton';
-import PDFView from '../../shared/RecipePdf';
+import { generatePDF } from '@/utils/generatePDF';
 
-const PDFDownloadLink = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-  {
-    ssr: false,
-    loading: () => <p>Loading...</p>,
-  }
-);
+
 
 
 
 const CardRecipe: React.FC = () => {
   const currentRecipe = useMealPlanStore((state) => state.currentRecipe);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   if (!currentRecipe) {
-    return <div>No recipe selected.</div>;
+    return <div>No recipe selected.</div>
   }
-
   const { dishName, description, imageUrl, recipe } = currentRecipe || {};
   if (!recipe) return <div>No recipe details available.</div>;
   const { ingredients, instructions, nutrition, prepTime, cookTime } = recipe;
   console.log('Current Recipe:', recipe);
+
+  const handleDownloadPDF = () => {
+    generatePDF(currentRecipe)
+  }
+
+
   return (
     <div className="min-h-screen bg-gray-50 pt-24">
       <div className="mx-auto max-w-4xl my-6">
@@ -46,14 +50,12 @@ const CardRecipe: React.FC = () => {
               </Button>
             </Link>
 
-            <PDFDownloadLink document={<PDFView recipe={currentRecipe} />} fileName={`recipe.pdf`}>
-              {({ loading }) => (
-                <Button variant="ghost" className="mb-4">
-                  <FileDown className="ml-2 h-4 w-4" />
-                  {loading ? 'Generating PDF...' : 'Download Recipe'}
-                </Button>
-              )}
-            </PDFDownloadLink>
+            {isClient && (
+              <Button variant="ghost" className="mb-4" onClick={handleDownloadPDF}>
+                <FileDown className="mr-2 h-4 w-4" />
+                Download Recipe
+              </Button>
+            )}
           </div>
 
           <h1 className="text-4xl font-bold mb-2">{dishName}</h1>
