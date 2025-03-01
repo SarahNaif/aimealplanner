@@ -76,9 +76,9 @@ export const generatePDF = (recipe: Meal) => {
   currentY += 10;
 
   instructions.forEach((instruction: any, index: number) => {
-    const lines = doc.splitTextToSize(`${index + 1}. ${instruction}`, 170);
+    const lines = doc.splitTextToSize(` ${instruction}`, 170);
     doc.text(lines, 20, currentY);
-    currentY += 7 * lines.length; // Adjust height based on text size
+    currentY += 7 * lines.length; 
   });
 
   // Save the PDF
